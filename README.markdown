@@ -11,12 +11,12 @@ sequence, the deque can offer optimal performance for accessing end points. To r
 overhead of abort operation, mbuf store sent data circularily among the containers (see 
 below) such that increase probability of acknowledged data be in front of a deque.
 
-> -------------------
-> | 0 | 2 | 4 | ... |
-> -------------------
->
-> -------------------
-> | 1 | 3 | 5 | ... |
-> -------------------
+    -------------------
+    | 0 | 2 | 4 | ... |
+    -------------------
+
+    -------------------
+    | 1 | 3 | 5 | ... |
+    -------------------
 
 
