@@ -33,7 +33,7 @@ public:
 	 *  @return T/F
 	 */
 	bool
-	isAborted(unsigned int id, time_t stamp);
+	is_aborted(unsigned int id, time_t stamp);
 
 	/** Mark a data as sent
 	 *  @param output pointer for accessing data
@@ -71,13 +71,13 @@ public:
 	/** Check wheather any data is unsent
 	 */
 	bool
-	isAvail();
+	is_avail();
 	
 	/** Check wheather the sequence number used
 	 *  to number data exceeds max value.
 	 */
 	bool
-	isOverflow();
+	is_next_overflow();
 	
 	void
 	dump();
@@ -88,7 +88,7 @@ private:
 	m_buffer &operator=(m_buffer const &cp);
 
 	bool
-	isFront(unsigned int id);
+	is_front(unsigned int id);
 	
 	std::vector<buf_handle> pool_;
 	unsigned int seq_num_;

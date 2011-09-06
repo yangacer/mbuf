@@ -1,7 +1,7 @@
 #include <cassert>
 #include <ctime>
 #include <deque>
-#include "mbuf.h"
+#include "mbuf.hpp"
 
 struct m_ele
 {
@@ -43,17 +43,18 @@ void
 m_buffer::dump()
 {
 	printf( "max: %d\t"
-		"isOverflow: %d\t"
+		"is_next_overflow: %d\t"
 		"in_avail(): %d\t"
 		"room: %d\n", 
-		max_, isOverflow(), in_avail(), room());
+		max_, is_next_overflow(), in_avail(), room());
 
 	for(unsigned int i = 0;i<pool_.size(); ++i){
 		printf(	"buffer[%u]\t"
 			"send_cnt: %d\n", 
 			i, pool_[i].send_cnt_);
 		for(unsigned int j =0; j<pool_[i].dq_.size();++j){
-			printf("\tid:%4d, data: %s\n", pool_[i].dq_[j].id_, pool_[i].dq_[j].data_);
+			printf("\tid:%4d, data: %s\n", 
+                pool_[i].dq_[j].id_, pool_[i].dq_[j].data_);
 		}
 	}
 }
@@ -133,7 +134,7 @@ m_buffer::ack(unsigned int id)
 	unsigned int pidx = id % pool_.size();
 	if(id >= snd_seq_)
 		return false;
-	if(!isFront(id)){
+	if(!is_front(id)){
 		// abort
 		unsigned int abort_cnt = 0;
 		unsigned int npidx;
@@ -151,7 +152,7 @@ m_buffer::ack(unsigned int id)
 		
 		pool_[pidx].send_cnt_ -= abort_cnt;
 		abo_cnt_ += abort_cnt;
-		if(isFront(id)){
+		if(is_front(id)){
 			pop(id);
 			pool_[pidx].send_cnt_--;
 			ack_cnt_ ++;
@@ -175,7 +176,7 @@ m_buffer::room()
 {	return max_ - seq_num_; }
 
 bool
-m_buffer::isFront(unsigned int id)
+m_buffer::is_front(unsigned int id)
 {
 	unsigned int pidx = id % pool_.size();
 
@@ -184,20 +185,20 @@ m_buffer::isFront(unsigned int id)
 }
 
 bool
-m_buffer::isAvail()
+m_buffer::is_avail()
 {
 	return seq_num_ > 0 && snd_seq_ < seq_num_;	
 }
 
 bool
-m_buffer::isAborted(unsigned int id, time_t stamp)
+m_buffer::is_aborted(unsigned int id, time_t stamp)
 {
 	return 	stamp < last_reset_ || 
 		id < pool_[id % pool_.size()].dq_.front().id_;	
 }
 
 bool
-m_buffer::isOverflow()
+m_buffer::is_next_overflow()
 { return (seq_num_+1) & ~max_; }
 
 

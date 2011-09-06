@@ -1,13 +1,13 @@
-#include "mbuf.h"
+#include "mbuf.hpp"
 #include <iostream>
 
 using namespace std;
 
 int main()
 {
-	m_buffer mb(3, 0x7);
+	m_buffer mb(3, 0x8);
 	
-	cout<<mb.isAvail()<<endl;
+	cout<<mb.is_avail()<<endl;
 
 	mb.push("1234", 5);
 	mb.push("4567", 5);
@@ -21,35 +21,33 @@ int main()
 
 	char const* data;
 	unsigned int size;
-	while(mb.isAvail()){
-		//if(!mb.isSent()){
-			cout<<"send id: "<<mb.send(&data, &size)<<endl;
-			cout<<"data: "<<data<<endl;
-		//}
-	}
-	time_t recv_time = time(0);
+    while(mb.is_avail()){
+        cout<<"send id: "<<mb.send(&data, &size)<<endl;
+        cout<<"data: "<<data<<endl;
+    }
+    time_t recv_time = time(0);
 
 	// normal ack
 	cout<<"\nnormal ack: ack(1)\n";
-	cout<<"Is aborted: "<<mb.isAborted(1, recv_time)<<endl;
-	if(!mb.isAborted(1, recv_time)){
+	cout<<"Is aborted: "<<mb.is_aborted(1, recv_time)<<endl;
+	if(!mb.is_aborted(1, recv_time)){
 		cout<<"Do ack ..."<<endl;
 		mb.ack(1);
 	}
 	mb.dump();
 	
 	cout<<"\nabnormal ack: ack(3)\n";
-	cout<<"Is aborted: "<<mb.isAborted(3, recv_time)<<endl;
-	if(!mb.isAborted(3, recv_time)){
+	cout<<"Is aborted: "<<mb.is_aborted(3, recv_time)<<endl;
+	if(!mb.is_aborted(3, recv_time)){
 		cout<<"Do ack ..."<<endl;
 		mb.ack(3);
 		// this ack will cause data 0 to be aborted
 	}
-	cout<<"Is data[0] aborted: "<<mb.isAborted(1, recv_time)<<endl;
+	cout<<"Is data[0] aborted: "<<mb.is_aborted(1, recv_time)<<endl;
 	mb.dump();
 
 	cout<<"\nresend after abort:\n";
-	while(mb.isAvail()){
+	while(mb.is_avail()){
 		//if(!mb.isSent()){
 			cout<<"send id: "<<mb.send(&data, &size)<<endl;
 			cout<<"data: "<<data<<endl;
